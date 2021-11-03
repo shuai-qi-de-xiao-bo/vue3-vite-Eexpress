@@ -17,6 +17,7 @@ export default function (getCaptchaSrc) {
         password: "",
         code: ""
     });
+    const loginLoading = ref(false);
     const loginRules = reactive({
         username: [{
             required: true,
@@ -47,12 +48,15 @@ export default function (getCaptchaSrc) {
     const loginSubmit = () => {
         loginRef.value.validate((valid) => {
             if (valid) {
+                loginLoading.value = true;
                 login(loginForm).then((res) => {
+                    loginLoading.value = false;
                     Message.success(res.msg);
                     store.commit('SET_USER_INFO', res.data);
                     store.commit('SET_TOKEN', res.token);
                     router.push("/");
                 }).catch((res) => {
+                    loginLoading.value = false;
                     Message.error(res.msg);
                     getCaptchaSrc();
                 });
@@ -63,6 +67,7 @@ export default function (getCaptchaSrc) {
         loginRef,
         loginForm,
         loginRules,
+        loginLoading,
         loginSubmit
     }
 }

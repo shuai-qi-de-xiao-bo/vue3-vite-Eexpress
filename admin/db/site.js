@@ -1,52 +1,9 @@
 const connect = require('./connect.js'); // 引入mongodb模块，获得客户端对象
-const {
-    ObjectId
-} = require('mongoose').Types;
-const {
-    dateFormatter
-} = require("../utils/index.js");
 
-const idFormatter = (id) => {
-    try {
-        id = ObjectId(id);
-    } catch (err) {
-        console.log(err);
-    }
-    return id;
-}
+const { idFormatter, filterData } = require("../utils/idFormatter.js");
 
 // site表视图模型
 const model = ['title', 'background', 'createTime', 'updateTime'];
-
-// 过滤site表没有的字段
-const filterData = (data = {}, type) => {
-    let body = {};
-    model.forEach(key => {
-        if (key in data) {
-            body[key] = data[key];
-        }
-    });
-    switch (type) {
-        case 'insert':
-            return Object.assign(body, {
-                createTime: dateFormatter(),
-                updateTime: dateFormatter()
-            });
-        case 'update':
-            return Object.assign(body, {
-                updateTime: dateFormatter()
-            });
-        case 'select':
-            for (let key in body) {
-                body[key] = {
-                    $regex: body[key] || ''
-                }
-            }
-            return body;
-        default:
-            return body;
-    }
-}
 
 module.exports = {
     /** 插入单条数据 */
@@ -56,7 +13,7 @@ module.exports = {
                 mongodb,
                 collection
             }) => {
-                collection.insertOne(filterData(data, 'insert')).then(result => {
+                collection.insertOne(filterData(model, data, 'insert')).then(result => {
                     result ? resolve({
                         data: result,
                         msg: '添加成功'
@@ -76,7 +33,7 @@ module.exports = {
                 mongodb,
                 collection
             }) => {
-                collection.findOne(filterData(data), {
+                collection.findOne(filterData(model, data), {
                     projection: {
                         title: 1,
                         background: 1,
@@ -131,7 +88,7 @@ module.exports = {
                 collection.updateOne({
                     _id: idFormatter(data._id)
                 }, {
-                    $set: filterData(data.data, 'update')
+                    $set: filterData(model, data.data, 'update')
                 }).then((result) => {
                     result ? resolve({
                         data: result,

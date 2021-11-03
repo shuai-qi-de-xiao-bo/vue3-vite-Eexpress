@@ -37,6 +37,18 @@ const defaultActive = route.path;
         <i class="el-icon-setting"></i>
         <span>站点配置</span>
       </el-menu-item>
+      <el-menu-item index="/blog">
+        <i class="el-icon-setting"></i>
+        <span>博客管理</span>
+      </el-menu-item>
+      <el-menu-item index="/profile">
+        <i class="el-icon-setting"></i>
+        <span>个人博客信息管理</span>
+      </el-menu-item>
+      <el-menu-item index="/contact">
+        <i class="el-icon-setting"></i>
+        <span>联系列表</span>
+      </el-menu-item>
     </el-menu>
   </div>
 </template>

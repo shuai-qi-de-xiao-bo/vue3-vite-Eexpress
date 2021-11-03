@@ -1,52 +1,10 @@
 const connect = require('./connect.js'); // 引入mongodb模块，获得客户端对象
-const {
-    ObjectId
-} = require('mongoose').Types;
-const {
-    dateFormatter
-} = require("../utils/index.js");
 
-const idFormatter = (id) => {
-    try {
-        id = ObjectId(id);
-    } catch (err) {
-        console.log(err);
-    }
-    return id;
-}
+const { idFormatter, filterData } = require("../utils/idFormatter.js");
+const pageFormatter = require("../utils/pageFormatter.js");
 
 // users表视图模型
 const model = ['username', 'password', 'createTime', 'updateTime'];
-
-// 过滤users表没有的字段
-const filterData = (data = {}, type) => {
-    let body = {};
-    model.forEach(key => {
-        if (key in data) {
-            body[key] = data[key];
-        }
-    });
-    switch (type) {
-        case 'insert':
-            return Object.assign(body, {
-                createTime: dateFormatter(),
-                updateTime: dateFormatter()
-            });
-        case 'update':
-            return Object.assign(body, {
-                updateTime: dateFormatter()
-            });
-        case 'select':
-            for (let key in body) {
-                body[key] = {
-                    $regex: body[key] || ''
-                }
-            }
-            return body;
-        default:
-            return body;
-    }
-}
 
 /** 查询账号是否重复 */
 const findUser = (collection, data) => {
@@ -67,8 +25,9 @@ module.exports = {
                 mongodb,
                 collection
             }) => {
+                data = pageFormatter(data);
                 let total = await collection.find().count(); // 获取总页数
-                collection.find(filterData(data, 'select')).skip(Number(data.pageSize) * (Number(data.pageNum) - 1)).limit(Number(data.pageSize)).toArray((err, result) => {
+                collection.find(filterData(model, data, 'select')).skip(Number(data.pageSize) * (Number(data.pageNum) - 1)).limit(Number(data.pageSize)).toArray((err, result) => {
                     err ? reject({
                         msg: '查询失败'
                     }) : resolve({
@@ -90,7 +49,7 @@ module.exports = {
                 collection
             }) => {
                 findUser(collection, data).then(() => {
-                    collection.insertOne(filterData(data, 'insert')).then(result => {
+                    collection.insertOne(filterData(model, data, 'insert')).then(result => {
                         result ? resolve({
                             data: result,
                             msg: '添加成功'
@@ -116,7 +75,7 @@ module.exports = {
                 mongodb,
                 collection
             }) => {
-                collection.findOne(filterData(data), {
+                collection.findOne(filterData(model, data), {
                     projection: {
                         username: 1,
                         _id: 1
@@ -170,7 +129,7 @@ module.exports = {
                 collection.updateOne({
                     _id: idFormatter(data._id)
                 }, {
-                    $set: filterData(data.data, 'update')
+                    $set: filterData(model, data.data, 'update')
                 }).then((result) => {
                     result ? resolve({
                         data: result,

@@ -8,7 +8,7 @@ import Message from "element-plus/lib/components/message";
 const query = reactive({
   pageSize: 10,
   pageNum: 1,
-  username: ''
+  username: "",
 });
 const sizeChange = (val) => {
   query.pageSize = val;
@@ -21,8 +21,11 @@ const currentChange = (val) => {
 };
 const total = ref(0);
 const tableData = ref([]);
+const loading = ref(false);
 const getTableData = () => {
+  loading.value = true;
   getList(query).then((res) => {
+    loading.value = false;
     tableData.value = res.data;
     total.value = res.total;
   });
@@ -56,27 +59,33 @@ const selectionList = ref([]);
 const handleSelectionChange = (val) => {
   selectionList.value = val;
 };
+const delManyLoading = ref(false);
 const deleteMany = () => {
   if (!selectionList.value.length) {
     return Message.warning("请先选择一条要操作的数据");
   }
   const _idArr = selectionList.value.map((ele) => ele._id);
+  delManyLoading.value = true;
   delMany(_idArr)
     .then((res) => {
+      delManyLoading.value = false;
       Message.success(res.msg);
       getTableData();
     })
     .catch((res) => {
+      delManyLoading.value = false;
       Message.error(res.msg);
     });
 };
 const deleteOne = (row) => {
+  loading.value = true;
   del(row._id)
     .then((res) => {
       Message.success(res.msg);
       getTableData();
     })
     .catch((res) => {
+      loading.value = false;
       Message.error(res.msg);
     });
 };
@@ -92,13 +101,15 @@ onMounted(() => {
       <el-input v-model="query.username" placeholder="请输入"></el-input>
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" @click="search">查询</el-button>
+      <el-button type="primary" @click="search" :loading="loading"
+        >查询</el-button
+      >
     </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="openAdd">新增</el-button>
     </el-form-item>
     <el-form-item>
-      <el-button type="danger" @click="deleteMany"
+      <el-button type="danger" @click="deleteMany" :loading="delManyLoading"
         >批量删除</el-button
       >
     </el-form-item>
@@ -106,6 +117,7 @@ onMounted(() => {
 
   <div class="el-table-container">
     <el-table
+      v-loading="loading"
       size="mini"
       :data="tableData"
       @selection-change="handleSelectionChange"

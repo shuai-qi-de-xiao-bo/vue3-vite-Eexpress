@@ -48,14 +48,17 @@ const rules = reactive({
     },
   ],
 });
-
+const loading = ref(false);
 const submit = () => {
   formRef.value.validate((valid) => {
     if (valid) {
+      loading.value = true;
       update(props.form).then((res) => {
+        loading.value = false;
         Message.success(res.msg);
         $emit("close", true);
       }).catch((res) => {
+        loading.value = false;
         Message.error(res.msg);
       });
     }
@@ -64,7 +67,7 @@ const submit = () => {
 </script>
 
 <template>
-  <el-dialog v-model="dialogVisible" title="编辑">
+  <el-dialog v-model="dialogVisible" title="编辑" @close="$emit('close')">
     <el-form
       :model="form"
       :rules="rules"
@@ -82,7 +85,7 @@ const submit = () => {
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="$emit('close')">取消</el-button>
-        <el-button type="primary" @click="submit">确定</el-button>
+        <el-button type="primary" @click="submit" :loading="loading">确定</el-button>
       </span>
     </template>
   </el-dialog>

@@ -4,7 +4,7 @@ import loginControl from "./login.js";
 import captchaControl from "./captcha.js";
 
 const { captchaLoading, captchaSrc, getCaptchaSrc } = captchaControl();
-const { loginRef, loginForm, loginRules, loginSubmit } = loginControl(getCaptchaSrc);
+const { loginRef, loginForm, loginRules, loginLoading, loginSubmit } = loginControl(getCaptchaSrc);
 onMounted(() => {
   getCaptchaSrc();
 });
@@ -18,6 +18,7 @@ onMounted(() => {
       :rules="loginRules"
       ref="loginRef"
       label-width="100px"
+      @keyup.enter="loginSubmit"
     >
       <el-form-item label="账户" prop="username">
         <el-input v-model="loginForm.username" autocomplete="off"></el-input>
@@ -40,7 +41,7 @@ onMounted(() => {
         </el-row>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="loginSubmit">登录</el-button>
+        <el-button type="primary" @click.prevent="loginSubmit" :loading="loginLoading">登录</el-button>
       </el-form-item>
     </el-form>
   </div>

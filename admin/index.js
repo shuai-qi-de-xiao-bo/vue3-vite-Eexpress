@@ -57,7 +57,7 @@ app.use(expressJwt({
     secret: TOKEN.jwtSign, // 签名
     algorithms: ['HS256'] // 算法
 }).unless({
-    path: ['/captcha', '/login', /^\/uploads\/.*/] // 不需要验证的接口集合
+    path: ['/captcha', '/login', /^\/uploads\/.*/, /^\/web\/.*/] // 不需要验证的接口集合
 }))
 
 // token验证错误回调
@@ -78,13 +78,21 @@ const chat = require("./routes/chat");
 const user = require("./routes/user");
 const upload = require("./routes/upload");
 const site = require("./routes/site");
+const profile = require("./routes/profile");
+const contact = require("./routes/contact");
+const blog = require("./routes/blog");
+const web = require("./routes/web");
 const index = require("./routes");
 app.use(login);
 app.use(index);
 app.use(site);
+app.use(profile);
+app.use(contact);
+app.use(blog);
 app.use(upload);
 app.use(chat);
 app.use(user);
+app.use(web);
 
 app.listen(PORT, () => {
     let d = new Date();

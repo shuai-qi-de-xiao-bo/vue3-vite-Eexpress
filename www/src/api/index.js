@@ -6,3 +6,10 @@ export const getWeather = (params) => {
         params
     });
 }
+
+export const upload = (data) => {
+    return axios.post({
+        url: '/upload',
+        data
+    });
+}

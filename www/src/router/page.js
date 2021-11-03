@@ -15,6 +15,18 @@ const page = [
             {
                 path: "/site",
                 component: () => import("@/views/site/index.vue")
+            },
+            {
+                path: "/blog",
+                component: () => import("@/views/blog/index.vue")
+            },
+            {
+                path: "/profile",
+                component: () => import("@/views/profile/index.vue")
+            },
+            {
+                path: "/contact",
+                component: () => import("@/views/contact/index.vue")
             }
         ]
     },

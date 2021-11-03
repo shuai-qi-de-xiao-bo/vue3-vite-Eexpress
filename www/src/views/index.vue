@@ -49,8 +49,11 @@ const dataFormatter = (res) => {
   data.value = obj;
 };
 
+const loading = ref(false);
 const refreshWeather = (params) => {
+  loading.value = true;
   getWeather(params).then((res) => {
+    loading.value = false;
     dataFormatter(res);
   });
 };
@@ -66,7 +69,7 @@ onMounted(() => {
 
 <template>
   <el-scrollbar style="height: 100%; width: 100%;">
-    <el-card>
+    <el-card v-loading="loading">
       <template #header>
         <div>未来几天气温</div>
       </template>
