@@ -20,7 +20,6 @@ router.beforeEach((to, from, next) => {
             next()
         }
     } else {
-        Message.error('当前登录已过期，请重新登录!')
         if (to.path !== '/login') {
             next({
                 path: '/login'

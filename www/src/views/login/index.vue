@@ -32,10 +32,10 @@ onMounted(() => {
       </el-form-item>
       <el-form-item label="验证码" prop="code">
         <el-row :gutter="10">
-          <el-col :span="16">
+          <el-col :span="12">
             <el-input v-model="loginForm.code" autocomplete="off"></el-input>
           </el-col>
-          <el-col :span="8" v-loading="captchaLoading">
+          <el-col :span="12" v-loading="captchaLoading">
             <el-image :src="captchaSrc" class="captcha" @click="getCaptchaSrc"></el-image>
           </el-col>
         </el-row>
