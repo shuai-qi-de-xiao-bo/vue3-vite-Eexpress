@@ -27,7 +27,7 @@ app.all("*", function (req, res, next) {
 })
 webscoket(app);
 app.use(express.static(path.join(__dirname, 'views'))); // 设置静态资源读取目录
-app.use(express.json());
+app.use(express.json()); // 解析json
 app.use(session({
     secret: 'keyboard cat',
     resave: true,

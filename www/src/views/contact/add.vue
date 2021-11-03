@@ -3,14 +3,6 @@ import { ref, reactive } from "vue";
 import { add } from "@/api/user.js";
 import Message from "element-plus/lib/components/message";
 
-defineProps({
-  dialogVisible: {
-    type: Boolean,
-    required: true,
-    default: false,
-  }
-});
-
 const $emit = defineEmits(["close"]);
 
 const formRef = ref(null);
@@ -64,7 +56,7 @@ const submit = () => {
 </script>
 
 <template>
-  <el-dialog v-model="dialogVisible" title="新增" @close="$emit('close')">
+  <el-dialog :model-value="true" title="新增" @close="$emit('close')">
     <el-form
       :model="form"
       :rules="rules"

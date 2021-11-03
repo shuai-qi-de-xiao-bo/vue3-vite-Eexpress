@@ -135,7 +135,11 @@ onMounted(() => {
           <el-button type="text" size="small" @click="deleteOne(row)"
             >删除</el-button
           >
-          <el-button v-if="false" type="text" size="small" @click="openEdit(row)"
+          <el-button
+            v-if="false"
+            type="text"
+            size="small"
+            @click="openEdit(row)"
             >编辑</el-button
           >
         </template>
@@ -165,14 +169,9 @@ onMounted(() => {
     </el-pagination>
   </div>
 
-  <addDialog v-if="addVisible" :dialogVisible="addVisible" @close="closeAll" />
+  <addDialog v-if="addVisible" @close="closeAll" />
 
-  <editDialog
-    v-if="editVisible"
-    :form="form"
-    :dialogVisible="editVisible"
-    @close="closeAll"
-  />
+  <editDialog v-if="editVisible" :form="form" @close="closeAll" />
 </template>
 
 <style lang="less" scoped>

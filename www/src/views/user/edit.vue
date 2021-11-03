@@ -4,11 +4,6 @@ import { update } from "@/api/user.js";
 import Message from "element-plus/lib/components/message";
 
 const props = defineProps({
-  dialogVisible: {
-    type: Boolean,
-    required: true,
-    default: false,
-  },
   form: {
     type: Object,
     required: true,
@@ -67,7 +62,7 @@ const submit = () => {
 </script>
 
 <template>
-  <el-dialog v-model="dialogVisible" title="编辑" @close="$emit('close')">
+  <el-dialog :model-value="true" title="编辑" @close="$emit('close')">
     <el-form
       :model="form"
       :rules="rules"

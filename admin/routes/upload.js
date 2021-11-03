@@ -38,6 +38,9 @@ router.get('/uploads/:name', function (req, res, next) {
     //建议使用绝对路径查找图片
     const rs = fs.createReadStream('./uploads/' + req.params.name);
     rs.pipe(res);
+    rs.on('error', function (err) {
+        res.sendStatus(404);
+    });
 });
 
 module.exports = router;

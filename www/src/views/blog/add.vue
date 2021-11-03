@@ -4,14 +4,6 @@ import { add } from "@/api/blog.js";
 import Message from "element-plus/lib/components/message";
 import WangEditor from "@/components/WangEditorVue3.vue";
 
-defineProps({
-  dialogVisible: {
-    type: Boolean,
-    required: true,
-    default: false,
-  },
-});
-
 const $emit = defineEmits(["close"]);
 
 const formRef = ref(null);
@@ -57,7 +49,7 @@ onMounted(() => {});
 </script>
 
 <template>
-  <el-dialog v-model="dialogVisible" title="新增" @close="$emit('close')">
+  <el-dialog :model-value="true" title="新增" @close="$emit('close')">
     <el-form
       :model="form"
       :rules="rules"
