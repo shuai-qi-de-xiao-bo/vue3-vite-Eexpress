@@ -18,7 +18,7 @@ const filterData = (model, data = {}, type) => {
     let body = {};
     model.forEach(key => {
         if (key in data) {
-            body[key] = data[key];
+            key === '_id' ? (body[key] = idFormatter(data[key])) : (body[key] = data[key]);
         }
     });
     switch (type) {

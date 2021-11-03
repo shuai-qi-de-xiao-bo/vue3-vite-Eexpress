@@ -8,7 +8,7 @@ import Message from "element-plus/lib/components/message";
 const query = reactive({
   pageSize: 10,
   pageNum: 1,
-  username: "",
+  name: "",
 });
 const sizeChange = (val) => {
   query.pageSize = val;
@@ -97,8 +97,8 @@ onMounted(() => {
 
 <template>
   <el-form size="mini" :inline="true" :model="query" class="demo-form-inline">
-    <el-form-item label="账号">
-      <el-input v-model="query.username" placeholder="请输入"></el-input>
+    <el-form-item label="姓名">
+      <el-input v-model="query.name" placeholder="请输入"></el-input>
     </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="search" :loading="loading"

@@ -7,7 +7,7 @@ const {
 const pageFormatter = require("../utils/pageFormatter.js");
 
 // blog表视图模型
-const model = ['title', 'content', 'createTime', 'updateTime'];
+const model = ['_id', 'title', 'content', 'createTime', 'updateTime'];
 
 module.exports = {
     /** 查询多条数据 */
@@ -64,6 +64,8 @@ module.exports = {
                     projection: {
                         title: 1,
                         content: 1,
+                        createTime: 1, 
+                        updateTime: 1,
                         _id: 1
                     }
                 }).then(result => {
