@@ -36,11 +36,28 @@ router.get("/web/blog/list", (req, res) => {
 })
 
 router.get("/web/blog/detail", (req, res) => {
-    Blog.findOne(req.query).then((data) => {
-        res.status(200).send({
-            ...successData,
-            data
-        })
+    Blog.findAll().then(({
+        msg,
+        data
+    }) => {
+        let index = data.findIndex(ele => ele._id.toString() === req.query._id);
+        if (index !== -1) {
+            index = index + Number(req.query.sort);
+            res.status(200).send({
+                ...successData,
+                data: {
+                    msg: msg,
+                    data: data[index],
+                    hasPre: index > 0,
+                    hasNext: index < data.length - 1
+                }
+            })
+        } else {
+            res.status(200).send({
+                ...errorData,
+                data
+            });
+        }
     }).catch((data) => {
         res.status(200).send({
             ...errorData,

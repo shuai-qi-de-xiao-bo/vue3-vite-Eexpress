@@ -33,6 +33,83 @@ module.exports = {
         });
     },
 
+    /** 查询全部数据 */
+    findAll() {
+        return new Promise((resolve, reject) => {
+            connect('blog').then(async ({
+                mongodb,
+                collection
+            }) => {
+                collection.find().toArray((err, result) => {
+                    err ? reject({
+                        msg: '查询失败'
+                    }) : resolve({
+                        data: result,
+                        msg: '查询成功'
+                    });
+                    mongodb.close(); // 关闭数据库
+                })
+            });
+        });
+    },
+
+    /** 上一条&下一条 */
+    findNext(id, type) {
+        const rule = {
+            "0": {
+                expression: (_id) => {
+                    return {
+                        '_id': idFormatter(_id)
+                    }
+                },
+                sort: 1
+            },
+            "1": {
+                expression: (_id) => {
+                    return {
+                        '_id': {
+                            '$gt': idFormatter(_id)
+                        }
+                    }
+                },
+                sort: 1 // 升序
+            },
+            "-1": {
+                expression: (_id) => {
+                    return {
+                        '_id': {
+                            '$lt': idFormatter(_id)
+                        }
+                    }
+                },
+                sort: -1 // 降序
+            }
+        };
+        return new Promise((resolve, reject) => {
+            if (!rule[type]) {
+                return reject({
+                    msg: '参数错误'
+                });
+            }
+            connect('blog').then(async ({
+                mongodb,
+                collection
+            }) => {
+                collection.find(rule[type].expression(id)).sort({
+                    _id: rule[type].sort
+                }).limit(2).toArray((err, result) => {
+                    err ? reject({
+                        msg: '查询失败'
+                    }) : resolve({
+                        data: result,
+                        msg: '查询成功'
+                    });
+                    mongodb.close(); // 关闭数据库
+                })
+            });
+        });
+    },
+
     /** 插入单条数据 */
     insertOne(data) {
         return new Promise((resolve, reject) => {
@@ -64,7 +141,7 @@ module.exports = {
                     projection: {
                         title: 1,
                         content: 1,
-                        createTime: 1, 
+                        createTime: 1,
                         updateTime: 1,
                         _id: 1
                     }
